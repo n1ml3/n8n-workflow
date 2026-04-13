@@ -85,3 +85,4 @@ n8n sẽ khởi chạy ngầm. Bạn có thể truy cập vào giao diện quả
 
 ---
 *Dự án được tạo ra với mục đích học tập và chia sẻ kiến thức về tự động hóa.*
+<img width="1763" height="844" alt="Image" src="https://github.com/user-attachments/assets/a52e3033-05d3-4fe5-b7d2-a1ff00e03329" />
