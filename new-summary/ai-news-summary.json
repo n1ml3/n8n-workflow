@@ -1,0 +1,157 @@
+{
+  "name": "ai-news-summary",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "77abf0f1-e6ad-4d44-8ded-6a61a0f79746",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://vnexpress.net/rss/so-hoa.rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "77391e9e-3603-4bec-adf4-11d89b559fd3",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "maxItems": 3
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "cf5509ab-ff5b-47f5-9f9f-9dce198990ed",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Bạn là một chuyên gia tổng hợp tin tức công nghệ. Dưới đây là danh sách các bài báo mới nhất được trích xuất từ RSS dưới định dạng JSON. \n\nNhiệm vụ của bạn là đọc phần \"title\" và \"contentSnippet\" của từng bài, sau đó tóm tắt lại thật ngắn gọn (tối đa 2 câu) và xuất ra theo đúng định dạng Markdown dưới đây để tôi gửi thẳng vào Discord. \n\nYÊU CẦU ĐỊNH DẠNG TUYỆT ĐỐI (Không thêm câu chào hỏi hay diễn giải thừa):\n\n **BẢN TIN CÔNG NGHỆ SÁNG NAY**\n-----------------------------------\n**[Điền title bài 1]**\n> [Điền nội dung tóm tắt ngắn gọn] \n\n **[Điền title bài 2]**\n> [Điền nội dung tóm tắt ngắn gọn]\n\n\n(Tiếp tục cho đến hết danh sách)\n-----------------------------------\n\nDỮ LIỆU JSON CẦN TÓM TẮT:\n{{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "414d857c-647a-430b-a808-328bdffbce70",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CEysGsfHXBZait43",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "5b04b16a-ff08-4129-8c1a-e66003959c4b",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "77d12a09-219e-4c91-89ec-fa80646ab402",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "58d0cef78510420a5affad50f856a4090e859d3774b6a11a1e7ced62c8bff0cb"
+  },
+  "id": "QyUrPwyzNAGy1xYC",
+  "tags": []
+}
